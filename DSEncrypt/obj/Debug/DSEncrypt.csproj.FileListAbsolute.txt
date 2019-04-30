@@ -1,7 +1,0 @@
-C:\Users\hp\source\repos\DSEncrypt\DSEncrypt\bin\Debug\DSEncrypt.exe.config
-C:\Users\hp\source\repos\DSEncrypt\DSEncrypt\bin\Debug\DSEncrypt.exe
-C:\Users\hp\source\repos\DSEncrypt\DSEncrypt\bin\Debug\DSEncrypt.pdb
-C:\Users\hp\source\repos\DSEncrypt\DSEncrypt\obj\Debug\DSEncrypt.csprojAssemblyReference.cache
-C:\Users\hp\source\repos\DSEncrypt\DSEncrypt\obj\Debug\DSEncrypt.csproj.CoreCompileInputs.cache
-C:\Users\hp\source\repos\DSEncrypt\DSEncrypt\obj\Debug\DSEncrypt.exe
-C:\Users\hp\source\repos\DSEncrypt\DSEncrypt\obj\Debug\DSEncrypt.pdb
