@@ -17,7 +17,8 @@ namespace DSEncrypt
             Console.WriteLine("Write down the perm formula \n" +
                 "(Length must be the same size as the block and must contain only numbers within the block's range).");
             string perm = Console.ReadLine();
-            TextPerm(text, block, perm);
+            Console.WriteLine("This is your ciphertext:");
+            Console.WriteLine(TextPerm(text, block, perm));
             Console.ReadLine();
         }
         static string TextPadding(string text, int block)
@@ -39,20 +40,21 @@ namespace DSEncrypt
             }
             return blockText;
         }
-        static void TextPerm(string text, int block, string perm)
+        static string TextPerm(string text, int block, string perm)
         {
             string[] BlockTextArray = BlockText(text, block).Split(' ');
             char[] x;
-            Console.WriteLine("This is your ciphertext:");
+            string ciphertext="";
             for (int i = 0; i < BlockTextArray.Length - 1; i++)
             {
                 x = BlockTextArray[i].ToArray();
                 for (int j = 0; j < perm.Length; j++)
                 {
-                    Console.Write(x[int.Parse(perm[j].ToString()) - 1]);
+                    ciphertext+=(x[int.Parse(perm[j].ToString()) - 1]);
                 }
-                Console.Write(" ");
+                ciphertext+=" ";
             }
+            return ciphertext;
         }
     }
 }
