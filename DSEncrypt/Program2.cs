@@ -20,14 +20,14 @@ namespace DSEncrypt
             getCypherText(str,block,perm);
             Console.ReadLine();
         }
-        static void  getCypherText(string str,int block, string perm)
+        static string  getCypherText(string str,int block, string perm)
         {   
             string[] text = str.Split(' ');
             List<string> plained = new List<string>();
             foreach(string item in text){ 
                 plained.Add(TextInOrder(item,block, perm));
             } 
-            Console.WriteLine("Ky eshte plaintext-i juaj: "+string.Join("", plained));
+            return (string.Join("", plained));
         }
         static string TextInOrder(string item,int block, string perm){
           List<char> arr = new List<char>();
