@@ -1,5 +1,18 @@
 {
-    "user": [
-
-    ]
+  "user": [
+    {
+      "username": "aurora",
+      "password": "1f2860ee56c8ebe9a067d161d4d0078b7123ba2a",
+      "ID": "12345",
+      "GPA": "8",
+      "Faculty": "fiek"
+    },
+    {
+      "username": "arita",
+      "password": "358720c6a9d47d66083e2dedbceb8e091ec766fe",
+      "ID": "12345",
+      "GPA": "9.1",
+      "Faculty": "fiek"
+    }
+  ]
 }
