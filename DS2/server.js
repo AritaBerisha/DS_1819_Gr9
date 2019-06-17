@@ -5,6 +5,7 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
 const saltedSha1 = require('salted-sha1');
+var inquirer = require('inquirer');
 
 const server = dgram.createSocket('udp4');
 let saltedHash;
@@ -16,19 +17,22 @@ server.on('error', (err) => {
 
 server.on('message', (msg, rinfo) => {
     console.log(`server got message from ${rinfo.address}:${rinfo.port}`);
-    saltedHash = saltedSha1(SplitArray(msg.toString())[1], 'SUPER-S@LT!');
-    if (db.get("user").find({ username: SplitArray(msg.toString())[0] }).value()) {
+    const [username, password2, id, AverageGrade, Faculty] = msg.toString().split(' ');
+    password = saltedSha1(password2, 'SUPER-S@LT!');
+    if (db.get("user").find({ username: username }).value()) {
         server.send(Buffer.from("Username already Exists"), rinfo.port, rinfo.address);
     } else {
         db.get("user").push({
-            username: SplitArray(msg.toString())[0],
-            password: saltedHash,
-            id: SplitArray(msg.toString())[2],
-            AverageGrade: SplitArray(msg.toString())[3],
-            Faculty: SplitArray(msg.toString())[4]
+            username,
+            password,
+            id,
+            AverageGrade,
+            Faculty
         }).write();
+
         server.send(Buffer.from("Thank u"), rinfo.port, rinfo.address);
     }
+
 
 
 });
