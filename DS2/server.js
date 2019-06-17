@@ -17,35 +17,33 @@ server.on('error', (err) => {
 
 server.on('message', (msg, rinfo) => {
     console.log(`server got message from ${rinfo.address}:${rinfo.port}`);
-    const [username, password2, id, AverageGrade, Faculty] = msg.toString().split(' ');
+    const [choice, username, password2, ID, GPA, Faculty] = msg.toString().split(',');
     password = saltedSha1(password2, 'SUPER-S@LT!');
-    if (db.get("user").find({ username: username }).value()) {
-        server.send(Buffer.from("Username already Exists"), rinfo.port, rinfo.address);
-    } else {
-        db.get("user").push({
-            username,
-            password,
-            id,
-            AverageGrade,
-            Faculty
-        }).write();
-
-        server.send(Buffer.from("Thank u"), rinfo.port, rinfo.address);
+    if (choice === "r") {
+        if (db.get("user").find({ username }).value()) {
+            server.send("Account already exists", rinfo.port, rinfo.address);
+        } else {
+            db.get("user").push({
+                username,
+                password,
+                ID,
+                GPA,
+                Faculty
+            }).write();
+            server.send(["You're now registered!", (Object.values(db.get("user").find({ username }).value())).toString()], rinfo.port, rinfo.address);
+        }
+    } else if (choice === "l") {
+        if (db.get("user").find({ username }).value() &&
+            db.get("user").find({ password }).value()) {
+            server.send(["You're now logged in!", (Object.values(db.get("user").find({ username }).value())).toString()], rinfo.port, rinfo.address);
+        } else {
+            server.send("This account doesn't exist", rinfo.port, rinfo.address);
+        }
     }
-
-
-
 });
-
 server.on('listening', () => {
     const address = server.address();
     console.log(`server listening ${address.address}:${address.port}`);
 });
 
-server.bind(41237);
-
-function SplitArray(array) {
-
-    let array2 = array.split(" ");
-    return array2;
-}
+server.bind(8080);
