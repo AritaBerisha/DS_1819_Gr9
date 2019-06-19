@@ -7,17 +7,26 @@ const db = low(adapter);
 const saltedSha1 = require('salted-sha1');
 var inquirer = require('inquirer');
 var forge = require('node-forge');
+var jwt = require('jsonwebtoken');
+
+var privateKEY = fs.readFileSync('./keys/RsaPrivate.key', 'utf8');
+
+var signOptions = {
+    expiresIn: "12h",
+    algorithm: "RS256"
+};
+
 
 const server = dgram.createSocket('udp4');
 let saltedHash;
 
-const XeroClient = require('xero-node').AccountingAPIClient;
-const config = require('./config.json');
+// const XeroClient = require('xero-node').AccountingAPIClient;
+// const config = require('./config.json');
 
-const x509 = require('x509');
-var subject = x509.getSubject(fs.readFileSync('./publickey.cert').toString());
+// const x509 = require('x509');
+// var subject = x509.getSubject(fs.readFileSync('./publickey.cert').toString());
 
-console.log(subject);
+//console.log(subject);
 
 server.on('error', (err) => {
     console.log(`server error:\n${err.stack}`);
@@ -26,7 +35,7 @@ server.on('error', (err) => {
 
 server.on('message', (msg, rinfo) => {
     console.log(`server got message from ${rinfo.address}:${rinfo.port}`);
-     /*(async () => {
+    /*(async () => {
 
         // You can initialise Private apps directly from your configuration
         let xero = new XeroClient(config);
@@ -49,15 +58,23 @@ server.on('message', (msg, rinfo) => {
                 GPA,
                 Faculty
             }).write();
-            server.send(["You're now registered!", (Object.values(db.get("user").find({ username }).value())).toString()], rinfo.port, rinfo.address);
+
+            server.send("You've been registered!", rinfo.port, rinfo.address);
         }
     } else if (choice === "l") {
         if (db.get("user").find({ username }).value() &&
             db.get("user").find({ password }).value()) {
-            server.send(["You're now logged in!", (Object.values(db.get("user").find({ username }).value())).toString()], rinfo.port, rinfo.address);
-        } else {
+            var payload = db.get("user").find({ username }).value();
+            delete payload.password;
+            token = jwt.sign(payload, privateKEY, signOptions);
+
+            server.send(token, rinfo.port, rinfo.address);
+        } else if (!db.get("user").find({ username }).value()) {
             server.send("This account doesn't exist", rinfo.port, rinfo.address);
+        } else if (!db.get("user").find({ password }).value()) {
+            server.send("Wrong Password.", rinfo.port, rinfo.address);
         }
+
     }
 });
 server.on('listening', () => {
