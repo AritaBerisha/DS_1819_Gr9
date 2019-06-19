@@ -1,21 +1,26 @@
 const dgram = require('dgram');
 const fs = require('fs');
 const client = dgram.createSocket('udp4');
-const readline = require('readline-sync');
 var inquirer = require('inquirer');
-<<<<<<< HEAD
 const crypto = require('crypto');
 const path = require('path');
-const fs = require('fs');
-=======
+var forge = require('node-forge');
+
+
 var jwt = require('jsonwebtoken');
 var publicKEY = fs.readFileSync('./keys/RsaPublic.key', 'utf8');
+
+// var key = fs.readFileSync('./keys/RsaPublic.key', 'utf8');
+// var iv = forge.random.getBytesSync(16);
+
+// var cipher = forge.cipher.createCipher('DES-CBC', key);
+// cipher.start({ iv: iv });
+
 
 var verifyOptions = {
     expiresIn: "12h",
     algorithm: ["RS256"]
 };
->>>>>>> deaf8d87c368aa286a9741c76350d2ba0dfbf426
 
 client.on('error', (err) => {
     console.log(`client error:\n${err.stack}`);
@@ -90,14 +95,16 @@ function myFunction(val) {
             if (answers.registering.toString() === 'Register') {
                 inquirer.prompt(questions).then(answers => {
                     let answ = Object.values(answers).toString();
-                    client.send([Buffer.from('r,'), Buffer.from(answ)], 14000, "localhost", (error) => {
+                    const [c, iv, rsaEncrypedKey] = encodeDesCBC("r," + answ)
+                    client.send(Buffer.from(c + ",," + iv + ",," + rsaEncrypedKey, 'utf-8'), 14000, "localhost", (error) => {
                         if (error) console.log(error.stack);
                     });
                 });
             } else if (answers.registering.toString() === 'Log in') {
                 inquirer.prompt(questions.slice(0, 2)).then(answers => {
                     let answ = Object.values(answers).toString();
-                    client.send([Buffer.from('l,'), Buffer.from(answ)], 14000, "localhost", (error) => {
+                    const [c, iv, rsaEncrypedKey] = encodeDesCBC("l," + answ)
+                    client.send(Buffer.from(c + ",," + iv + ",," + rsaEncrypedKey, 'utf-8'), 14000, "localhost", (error) => {
                         if (error) console.log(error.stack);
                     });
                 });
@@ -121,13 +128,15 @@ client.on('message', (msg, rinfo) => {
 
     }
 });
-myFunction();
 
-function encodeDesCBC(textToEncode, keyString, ivString) {
-  var key = new Buffer(keyString.substring(0, 8), 'utf8');
-  var iv = new Buffer(ivString.substring(0, 8), 'utf8');
-  var cipher = crypto.createCipheriv('des-cbc', key, iv);
-  var c = cipher.update(textToEncode, 'utf8', 'base64');
-  c += cipher.final('base64');
-  return c;
+function encodeDesCBC(textToEncode) {
+    var key = crypto.randomBytes(8);
+    const iv = crypto.randomBytes(8);
+    var publicKey = fs.readFileSync('./keys/publickey.cert', 'utf8');
+    const cipher = crypto.createCipheriv('des-cbc', key, iv);
+    let c = cipher.update(textToEncode, 'utf8', 'base64');
+    c += cipher.final('base64');
+    const rsaEncryptedKey = crypto.publicEncrypt(publicKey, key).toString('base64');
+    return [c, iv.toString('base64'), rsaEncryptedKey];
 }
+myFunction();

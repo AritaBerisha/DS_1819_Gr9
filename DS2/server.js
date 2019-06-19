@@ -9,6 +9,33 @@ const shortid = require('shortid')
 var inquirer = require('inquirer');
 var forge = require('node-forge');
 var jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
+
+
+
+
+
+
+
+//DES-CBC
+// var key = fs.readFileSync('./keys/publickey.cert', 'utf8');
+// var iv = forge.random.getBytesSync(16);
+
+// var cipher = forge.cipher.createCipher('DES-CBC', key);
+// cipher.start({ iv: iv });
+// cipher.update(forge.util.createBuffer("Aurora"));
+// cipher.finish();
+// var encrypted = cipher.output;
+// console.log(encrypted.toHex());
+
+// var decipher = forge.cipher.createDecipher('DES-CBC', key);
+// decipher.start({ iv: iv });
+// decipher.update(encrypted);
+// var result = decipher.finish(); // check 'result' for true/false
+// console.log(decipher.output.toString());
+
+
 
 var privateKEY = fs.readFileSync('./keys/RsaPrivate.key', 'utf8');
 
@@ -46,7 +73,17 @@ server.on('message', (msg, rinfo) => {
         console.log('Number of invoices:', result.Invoices.length);
 
     })();*/
-    const [choice, username, password2, GPA, Faculty] = msg.toString().split(',');
+
+    const [c, iv, rsaEncryptedKey] = msg.toString().split(",,");
+    var privateKey = fs.readFileSync('./keys/privatekey.pem', 'utf8');
+    console.log(privateKey);
+    const desKey = crypto.privateDecrypt(privateKey, Buffer.from(rsaEncryptedKey, 'base64'));
+    const decrypted = crypto.createDecipheriv('des-cbc', Buffer.from(desKey), Buffer.from(iv, 'base64'));
+    let d = decrypted.update(c, 'base64', 'utf8');
+    d += decrypted.final('utf8');
+    console.log(d);
+    console.log(c);
+    const [choice, username, password2, GPA, Faculty] = d.toString().split(',');
     password = saltedSha1(password2, 'SUPER-S@LT!');
     if (choice === "r") {
         if (db.get("user").find({ username }).value()) {
@@ -55,7 +92,7 @@ server.on('message', (msg, rinfo) => {
             db.get("user").push({
                 username,
                 password,
-                ID:shortid.generate(),
+                ID: shortid.generate(),
                 GPA,
                 Faculty
             }).write();
@@ -81,6 +118,7 @@ server.on('message', (msg, rinfo) => {
 server.on('listening', () => {
     const address = server.address();
     console.log(`server listening ${address.address}:${address.port}`);
+
 });
 
 server.bind(14000);
