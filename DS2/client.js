@@ -1,15 +1,27 @@
 const dgram = require('dgram');
+const fs = require('fs');
 const client = dgram.createSocket('udp4');
 const readline = require('readline-sync');
 var inquirer = require('inquirer');
+<<<<<<< HEAD
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
+=======
+var jwt = require('jsonwebtoken');
+var publicKEY = fs.readFileSync('./keys/RsaPublic.key', 'utf8');
+
+var verifyOptions = {
+    expiresIn: "12h",
+    algorithm: ["RS256"]
+};
+>>>>>>> deaf8d87c368aa286a9741c76350d2ba0dfbf426
 
 client.on('error', (err) => {
     console.log(`client error:\n${err.stack}`);
     client.close();
 });
+
 
 const requireLetterAndNumber = value => {
     if (/\w/.test(value) && /\d/.test(value)) {
@@ -96,18 +108,17 @@ function myFunction(val) {
 }
 
 client.on('message', (msg, rinfo) => {
-    if (msg.toString() === 'Account already exists' || msg.toString() === "This account doesn't exist") {
+    if (msg.toString() === 'Account already exists' || msg.toString() === "This account doesn't exist" || msg.toString() === "Wrong Password." || msg.toString() === "You've been registered!") {
         console.log(msg.toString());
         myFunction('Exit');
     } else {
-        let message = msg.toString().split('!');
-        let data = message[1].split(',');
-        console.log(message[0]);
-        console.log('User: ' + data[0]);
-        console.log('ID: ' + data[2]);
-        console.log('GPA: ' + data[3]);
-        console.log('Faculty: ' + data[4]);
-        myFunction('Exit');
+        try {
+            var validated = jwt.verify(msg.toString(), publicKEY, verifyOptions);
+            console.log(validated);
+        } catch {
+            console(error.stack);
+        }
+
     }
 });
 myFunction();
