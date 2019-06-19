@@ -5,6 +5,7 @@ const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync('db.json');
 const db = low(adapter);
 const saltedSha1 = require('salted-sha1');
+const shortid = require('shortid')
 var inquirer = require('inquirer');
 var forge = require('node-forge');
 
@@ -36,7 +37,7 @@ server.on('message', (msg, rinfo) => {
         console.log('Number of invoices:', result.Invoices.length);
 
     })();*/
-    const [choice, username, password2, ID, GPA, Faculty] = msg.toString().split(',');
+    const [choice, username, password2, GPA, Faculty] = msg.toString().split(',');
     password = saltedSha1(password2, 'SUPER-S@LT!');
     if (choice === "r") {
         if (db.get("user").find({ username }).value()) {
@@ -45,7 +46,7 @@ server.on('message', (msg, rinfo) => {
             db.get("user").push({
                 username,
                 password,
-                ID,
+                ID:shortid.generate(),
                 GPA,
                 Faculty
             }).write();

@@ -2,7 +2,9 @@ const dgram = require('dgram');
 const client = dgram.createSocket('udp4');
 const readline = require('readline-sync');
 var inquirer = require('inquirer');
-
+const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
 
 client.on('error', (err) => {
     console.log(`client error:\n${err.stack}`);
@@ -16,12 +18,12 @@ const requireLetterAndNumber = value => {
     return 'Password need to have at least a letter and a number';
 };
 
-const checkifid = value => {
-    if (value.match(/^\d+$/)) {
-        return true;
-    }
-    return 'You need to provide a number';
-};
+// const checkifid = value => {
+//     if (value.match(/^\d+$/)) {
+//         return true;
+//     }
+//     return 'You need to provide a number';
+// };
 
 const checkifgpa = value => {
     if ((value.match(/^\d+$/) || value.match(/^\d+\.\d+$/)) && value <= 10 && value > 5)
@@ -41,12 +43,12 @@ var questions = [{
         mask: '*',
         validate: requireLetterAndNumber
     },
-    {
-        type: 'input',
-        name: 'id',
-        message: "Enter your id: ",
-        validate: checkifid
-    },
+    // {
+    //     type: 'input',
+    //     name: 'id',
+    //     message: "Enter your id: ",
+    //     validate: checkifid
+    // },
     {
         type: 'input',
         name: 'gpa',
@@ -109,3 +111,12 @@ client.on('message', (msg, rinfo) => {
     }
 });
 myFunction();
+
+function encodeDesCBC(textToEncode, keyString, ivString) {
+  var key = new Buffer(keyString.substring(0, 8), 'utf8');
+  var iv = new Buffer(ivString.substring(0, 8), 'utf8');
+  var cipher = crypto.createCipheriv('des-cbc', key, iv);
+  var c = cipher.update(textToEncode, 'utf8', 'base64');
+  c += cipher.final('base64');
+  return c;
+}
