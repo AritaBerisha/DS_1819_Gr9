@@ -76,14 +76,14 @@ function myFunction(val) {
             if (answers.registering.toString() === 'Register') {
                 inquirer.prompt(questions).then(answers => {
                     let answ = Object.values(answers).toString();
-                    client.send([Buffer.from('r,'), Buffer.from(answ)], 8080, "localhost", (error) => {
+                    client.send([Buffer.from('r,'), Buffer.from(answ)], 14000, "localhost", (error) => {
                         if (error) console.log(error.stack);
                     });
                 });
             } else if (answers.registering.toString() === 'Log in') {
                 inquirer.prompt(questions.slice(0, 2)).then(answers => {
                     let answ = Object.values(answers).toString();
-                    client.send([Buffer.from('l,'), Buffer.from(answ)], 8080, "localhost", (error) => {
+                    client.send([Buffer.from('l,'), Buffer.from(answ)], 14000, "localhost", (error) => {
                         if (error) console.log(error.stack);
                     });
                 });

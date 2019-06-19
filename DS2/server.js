@@ -6,9 +6,18 @@ const adapter = new FileSync('db.json');
 const db = low(adapter);
 const saltedSha1 = require('salted-sha1');
 var inquirer = require('inquirer');
+var forge = require('node-forge');
 
 const server = dgram.createSocket('udp4');
 let saltedHash;
+
+const XeroClient = require('xero-node').AccountingAPIClient;
+const config = require('./config.json');
+
+const x509 = require('x509');
+var subject = x509.getSubject(fs.readFileSync('./publickey.cert').toString());
+
+console.log(subject);
 
 server.on('error', (err) => {
     console.log(`server error:\n${err.stack}`);
@@ -17,6 +26,16 @@ server.on('error', (err) => {
 
 server.on('message', (msg, rinfo) => {
     console.log(`server got message from ${rinfo.address}:${rinfo.port}`);
+     /*(async () => {
+
+        // You can initialise Private apps directly from your configuration
+        let xero = new XeroClient(config);
+
+        const result = await xero.invoices.get();
+
+        console.log('Number of invoices:', result.Invoices.length);
+
+    })();*/
     const [choice, username, password2, ID, GPA, Faculty] = msg.toString().split(',');
     password = saltedSha1(password2, 'SUPER-S@LT!');
     if (choice === "r") {
@@ -46,4 +65,4 @@ server.on('listening', () => {
     console.log(`server listening ${address.address}:${address.port}`);
 });
 
-server.bind(8080);
+server.bind(14000);
