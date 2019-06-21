@@ -96,7 +96,7 @@ function myFunction(val) {
                 inquirer.prompt(questions).then(answers => {
                     let answ = Object.values(answers).toString();
                     const [c, iv, rsaEncrypedKey] = encodeDesCBC("r," + answ)
-                    client.send(Buffer.from(c + ",," + iv + ",," + rsaEncrypedKey, 'utf-8'), 14000, "localhost", (error) => {
+                    client.send(Buffer.from(c + ",," + iv + ",," + rsaEncrypedKey, 'utf-8'), 12000, "localhost", (error) => {
                         if (error) console.log(error.stack);
                     });
                 });
@@ -104,7 +104,7 @@ function myFunction(val) {
                 inquirer.prompt(questions.slice(0, 2)).then(answers => {
                     let answ = Object.values(answers).toString();
                     const [c, iv, rsaEncrypedKey] = encodeDesCBC("l," + answ)
-                    client.send(Buffer.from(c + ",," + iv + ",," + rsaEncrypedKey, 'utf-8'), 14000, "localhost", (error) => {
+                    client.send(Buffer.from(c + ",," + iv + ",," + rsaEncrypedKey, 'utf-8'), 12000, "localhost", (error) => {
                         if (error) console.log(error.stack);
                     });
                 });
@@ -123,7 +123,7 @@ client.on('message', (msg, rinfo) => {
             var validated = jwt.verify(msg.toString(), publicKEY, verifyOptions);
             console.log(validated);
         } catch {
-            console(error.stack);
+            console.log("There seems to be a problem...");
         }
 
     }

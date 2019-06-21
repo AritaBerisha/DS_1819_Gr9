@@ -2,42 +2,23 @@
   "user": [
     {
       "username": "aurora",
-      "password": "1f2860ee56c8ebe9a067d161d4d0078b7123ba2a",
-      "ID": "12345",
-      "GPA": "8",
+      "password": "$2b$10$2rN5uBHsmHHsTsglqU.E7e1g20.A2KXOF2yX6Lyg8X3rCqLSlsEJ2",
+      "ID": "93b2VpSKd",
+      "GPA": "8.4",
       "Faculty": "fiek"
     },
     {
       "username": "arita",
-      "password": "358720c6a9d47d66083e2dedbceb8e091ec766fe",
-      "ID": "12345",
+      "password": "$2b$10$mO0lVvEquoKIEn396kTTa.JUZJm6sseGgLwc87PgtZtMDSUfyb//C",
+      "ID": "j1bRwZGBw",
       "GPA": "9.1",
       "Faculty": "fiek"
     },
     {
-      "username": "Arita",
-      "password": "1e515eb75003fdb1076c399d7b10427ab45c7d8b",
-      "ID": "pm1PEn4TL",
-      "GPA": "8",
-      "Faculty": "gyhuj"
-    },
-    {
-      "username": "fgyuhjik,67890-,8,tgyuhj",
-      "password": "d8981043a59dff411d251a860f65dd4bae39add9",
-      "ID": "6mrzH4GCl"
-    },
-    {
-      "username": "",
-      "password": "62797be8792c0b56394994b92ef905c9ee9c2dd8",
-      "ID": "DgCvXq_MZ",
-      "GPA": "123",
-      "Faculty": "8"
-    },
-    {
-      "username": "Laura",
-      "password": "1e515eb75003fdb1076c399d7b10427ab45c7d8b",
-      "ID": "vkDkhkIR9",
-      "GPA": "8",
+      "username": "arian",
+      "password": "$2b$10$LG0hGRiCn/H5Pa9h.W0.uu047UzpoVvjZswU.r61MwO.uc64jXmxC",
+      "ID": "gAhZSD4WO",
+      "GPA": "8.5",
       "Faculty": "fiek"
     }
   ]
