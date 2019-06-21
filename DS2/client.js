@@ -10,13 +10,6 @@ var forge = require('node-forge');
 var jwt = require('jsonwebtoken');
 var publicKEY = fs.readFileSync('./keys/RsaPublic.key', 'utf8');
 
-// var key = fs.readFileSync('./keys/RsaPublic.key', 'utf8');
-// var iv = forge.random.getBytesSync(16);
-
-// var cipher = forge.cipher.createCipher('DES-CBC', key);
-// cipher.start({ iv: iv });
-
-
 var verifyOptions = {
     expiresIn: "12h",
     algorithm: ["RS256"]

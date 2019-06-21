@@ -57,9 +57,9 @@ server.on('message', (msg, rinfo) => {
             server.send("You've been registered!", rinfo.port, rinfo.address);
         }
     } else if (choice === "l") {
-            let pass=db.get("user").find({ password }).value();
+            let pass=Object.values(db.get("user").find({ username }).value())[1];
         if (db.get("user").find({ username }).value() &&
-            bcrypt.compareSync(password, hash)) {
+            bcrypt.compareSync(password, pass)) {
             //var payload = db.get("user").find({ username }).value();
             const { password, ...payload } = db.get("user").find({ username }).value();
             //delete payload.password;
