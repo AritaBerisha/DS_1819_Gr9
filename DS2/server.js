@@ -57,21 +57,22 @@ server.on('message', (msg, rinfo) => {
             server.send("You've been registered!", rinfo.port, rinfo.address);
         }
     } else if (choice === "l") {
+        if (!db.get("user").find({ username }).value()) {
+            server.send("This account doesn't exist", rinfo.port, rinfo.address);
+        }else{
             let pass=Object.values(db.get("user").find({ username }).value())[1];
         if (db.get("user").find({ username }).value() &&
-            bcrypt.compareSync(password, pass)) {
-            //var payload = db.get("user").find({ username }).value();
-            const { password, ...payload } = db.get("user").find({ username }).value();
-            //delete payload.password;
-            token = jwt.sign(payload, privateKEY, signOptions);
+                bcrypt.compareSync(password, pass)) {
+                //var payload = db.get("user").find({ username }).value();
+                const { password, ...payload } = db.get("user").find({ username }).value();
+                //delete payload.password;
+                token = jwt.sign(payload, privateKEY, signOptions);
 
-            server.send(token, rinfo.port, rinfo.address);
-        } else if (!db.get("user").find({ username }).value()) {
-            server.send("This account doesn't exist", rinfo.port, rinfo.address);
-        } else if (!db.get("user").find({ password }).value()) {
-            server.send("Wrong Password.", rinfo.port, rinfo.address);
-        }
-
+                server.send(token, rinfo.port, rinfo.address);
+            }else if (!db.get("user").find({ password }).value()) {
+                server.send("Wrong Password.", rinfo.port, rinfo.address);
+            }
+        } 
     }
 });
 server.on('listening', () => {
